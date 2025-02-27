@@ -1,7 +1,7 @@
 # MGCL-DA
 ## Code Availability
 
-The code used in this study will be made publicly available upon the acceptance of the corresponding paper. If you have any questions or require further details, please feel free to contact us.
+The code for *Multi-view Graph Contrastive Learning with Dynamic Self-aware and Cross-sample Topology Augmentation for Brain Disorder Diagnosis (MGCL-DA)* has been made publicly available. If you have any questions or need further details, please feel free to contact us.
 
 ## License
 
