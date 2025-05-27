@@ -6,7 +6,7 @@
 <!---->
 </p> 
 
-![MGCL-DA](img/framework.pdf)
+![MGCL-DA](img/framework.png)
 
 
 
