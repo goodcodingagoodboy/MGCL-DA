@@ -6,7 +6,7 @@
 <!---->
 </p> 
 
-![MGCL-DA](img/TOKI.png)
+![MGCL-DA](img/framework.pdf)
 
 
 
