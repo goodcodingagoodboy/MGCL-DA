@@ -23,59 +23,23 @@
 
 ## Overview
 
-**MGCL-DA** is a multi-view graph contrastive learning framework for rs-fMRI-based brain disorder diagnosis. It is designed to model both individual-specific brain topology and functional heterogeneity across subjects.
-
-Unlike graph contrastive learning methods that rely on static graph augmentations, MGCL-DA constructs two complementary augmented views and updates them dynamically during training. The framework then applies semantic-aware contrastive constraints among the original, self-aware, and cross-sample views to learn more discriminative brain-network representations.
-
-The method was evaluated on a major depressive disorder (MDD) dataset and was accepted by **MICCAI 2025 as an Early Accept paper**.
+**MGCL-DA** is a multi-view graph contrastive learning framework for rs-fMRI-based brain disorder diagnosis. It dynamically constructs self-aware and cross-sample topology augmentations and applies semantic-aware contrastive constraints to learn discriminative brain-network representations. The work was accepted by **MICCAI 2025 as an Early Accept paper**.
 
 ## Method Highlights
 
-- **Self-aware topology augmentation** suppresses redundant information and emphasizes subject-specific functional patterns.
-- **Cross-sample topology augmentation** captures inter-subject heterogeneity through interactions across brain-network samples.
-- **Dynamic view updating** progressively refines the augmented representations instead of keeping them fixed throughout training.
-- **Multi-view contrastive learning with min-max constraints** aligns semantically related views while preserving complementary information between different augmentation strategies.
-- **ST-GCN-based representation learning** jointly models spatial brain connectivity and temporal rs-fMRI dynamics.
+- **Complementary topology augmentation:** models individual-specific patterns and inter-subject functional heterogeneity.
+- **Dynamic view updating:** progressively refines the augmented brain-network representations during training.
+- **Multi-view contrastive learning:** uses min-max constraints to preserve both shared and complementary semantics.
 
 ## Repository Structure
 
-| Path | Description |
+| Network module | Description |
 | --- | --- |
-| `net/model.py` | Main MGCL-DA model and the three ST-GCN branches |
-| `net/SelfAwareAugmented.py` | Self-aware topology augmentation module |
-| `net/CrossSampleAugmented.py` | Cross-sample topology augmentation module |
-| `net/DynamicUpdate.py` | Dynamic update strategy for augmented views |
-| `net/tgcn.py` | Temporal graph convolution implementation |
-| `Loss.py` | Classification and multi-view contrastive objective |
-| `dataset_prep.py` | PyTorch dataset wrapper |
-| `img/framework.png` | Overview of the proposed framework |
-
-## Input Convention
-
-Following the notation in the paper, the BOLD signals of each subject form an undirected spatio-temporal brain network:
-
-```text
-G ∈ R^(T × N)
-```
-
-where `T` is the number of rs-fMRI time points and `N` is the number of brain regions defined by the atlas. For a mini-batch of `B` subjects, the inputs are extended to:
-
-```text
-G ∈ R^(B × T × N)
-A ∈ R^(B × N × N)
-```
-
-where `A` is the functional connectivity matrix computed from the Pearson correlation coefficients between all ROI pairs. In the experiments, the AAL atlas divides the brain into `N = 116` regions.
-
-The current ST-GCN implementation introduces singleton channel and instance dimensions, so the paper-level input `G ∈ R^(B × T × N)` should be provided to `Model.forward` as:
-
-```text
-B × 1 × T × N × 1
-```
-
-In `net/model.py`, the local variable named `N` denotes the batch size, while `V` denotes the number of brain regions. The shared adjacency matrix is loaded from `adj_matrix.npy` under the configured `root_path` and normalized internally.
-
-> This repository currently provides the core model, topology augmentation modules, dataset wrapper, and learning objective. Dataset preprocessing should follow the rs-fMRI and brain-network construction protocol described in the paper.
+| `net/model.py` | Main MGCL-DA architecture with three ST-GCN branches |
+| `net/SelfAwareAugmented.py` | Self-aware topology augmentation |
+| `net/CrossSampleAugmented.py` | Cross-sample topology augmentation |
+| `net/DynamicUpdate.py` | Dynamic augmentation update mechanism |
+| `net/tgcn.py` | Temporal graph convolution layer |
 
 ## News
 
