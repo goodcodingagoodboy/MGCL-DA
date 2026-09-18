@@ -1,52 +1,95 @@
-
-
-## Multi-view Graph Contrastive Learning with Dynamic Self-aware and Cross-sample Topology Augmentation for Brain Disorder Diagnosis
-
-<p align="center" width="100%">
-<!---->
-</p> 
-
-![MGCL-DA](img/framework.png)
-
-
-
 <div align="center">
-    <span class="author-block">
-    Hao Zhang</a><sup>1</sup>,</span>
-    <span class="author-block">
-    <a target="_blank">Xiaoyun Liu</a><sup>2</sup>,</span>
-    <span class="author-block">
-    <a target="_blank">Shuo Huang</a><sup>1</sup>,</span>
-    <span class="author-block">
-    <a target="_blank">Yonggui Yuan</a><sup>2</sup>,</span>
-    <span class="author-block">
-    <a target="_blank">Daoqiang Zhang</a><sup>3</sup>,</span>
-    <span class="author-block">
-    <a target="_blank">Li Zhang</a><sup>1</sup>,</span>
-    <span class="author-block">
-    </span>
+
+# MGCL-DA
+
+### Multi-view Graph Contrastive Learning with Dynamic Self-aware and Cross-sample Topology Augmentation for Brain Disorder Diagnosis
+
+[![MICCAI 2025](https://img.shields.io/badge/MICCAI-2025-2F6FBB.svg)](https://papers.miccai.org/miccai-2025/0623-Paper2205.html)
+[![Early Accept](https://img.shields.io/badge/Early_Accept-red.svg)](https://papers.miccai.org/miccai-2025/0623-Paper2205.html)
+[![Paper](https://img.shields.io/badge/Paper-Open_Access-4CAF50.svg)](https://papers.miccai.org/miccai-2025/paper/2205_paper.pdf)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**Hao Zhang<sup>1</sup>, Xiaoyun Liu<sup>2</sup>, Shuo Huang<sup>1</sup>, Yonggui Yuan<sup>2</sup>, Daoqiang Zhang<sup>3</sup>, Li Zhang<sup>1</sup>**
+
+<sup>1</sup> Nanjing Forestry University  
+<sup>2</sup> Southeast University  
+<sup>3</sup> Nanjing University of Aeronautics and Astronautics
+
 </div>
 
+<p align="center">
+  <img src="img/framework.png" alt="MGCL-DA framework" width="95%">
+</p>
 
-<br>
+## Overview
 
-<div align="center">
-    <sup>1</sup>
-    <a target="_blank">College of Information Science and Technology & Artificial Intelligence, Nanjing Forestry University, Nanjing 210037, China</a>&emsp;
-    <br>
-    <sup>2</sup> <a target="_blank">Department of Psychosomatics and Psychiatry, Zhongda Hospital, School of Medicine, Jiangsu Provincial Key Laboratory of Brain Science and Medicine, Southeast University, Nanjing, 210009, China</a>&emsp;
-    <br>
-    <sup>3</sup> <a target="_blank">College of Artificial Intelligence, Nanjing University of Aeronautics and Astronautics, Nanjing 210016, China</a>
-    <br>
-</div>
+**MGCL-DA** is a multi-view graph contrastive learning framework for rs-fMRI-based brain disorder diagnosis. It is designed to model both individual-specific brain topology and functional heterogeneity across subjects.
 
+Unlike graph contrastive learning methods that rely on static graph augmentations, MGCL-DA constructs two complementary augmented views and updates them dynamically during training. The framework then applies semantic-aware contrastive constraints among the original, self-aware, and cross-sample views to learn more discriminative brain-network representations.
 
+The method was evaluated on a major depressive disorder (MDD) dataset and was accepted by **MICCAI 2025 as an Early Accept paper**.
+
+## Method Highlights
+
+- **Self-aware topology augmentation** suppresses redundant information and emphasizes subject-specific functional patterns.
+- **Cross-sample topology augmentation** captures inter-subject heterogeneity through interactions across brain-network samples.
+- **Dynamic view updating** progressively refines the augmented representations instead of keeping them fixed throughout training.
+- **Multi-view contrastive learning with min-max constraints** aligns semantically related views while preserving complementary information between different augmentation strategies.
+- **ST-GCN-based representation learning** jointly models spatial brain connectivity and temporal rs-fMRI dynamics.
+
+## Repository Structure
+
+| Path | Description |
+| --- | --- |
+| `net/model.py` | Main MGCL-DA model and the three ST-GCN branches |
+| `net/SelfAwareAugmented.py` | Self-aware topology augmentation module |
+| `net/CrossSampleAugmented.py` | Cross-sample topology augmentation module |
+| `net/DynamicUpdate.py` | Dynamic update strategy for augmented views |
+| `net/tgcn.py` | Temporal graph convolution implementation |
+| `Loss.py` | Classification and multi-view contrastive objective |
+| `dataset_prep.py` | PyTorch dataset wrapper |
+| `img/framework.png` | Overview of the proposed framework |
+
+## Input Convention
+
+The main model expects an rs-fMRI graph tensor with shape:
+
+```text
+N × C × T × V × M
+```
+
+where:
+
+- `N`: batch size
+- `C`: input feature channels
+- `T`: temporal dimension
+- `V`: number of brain regions or graph nodes
+- `M`: number of instances per sample
+
+The normalized graph topology is constructed from an `adj_matrix.npy` file located under the model's configured `root_path`.
+
+> This repository currently provides the core model, topology augmentation modules, dataset wrapper, and learning objective. Dataset preprocessing should follow the rs-fMRI and brain-network construction protocol used in the paper.
 
 ## News
 
-- **MGCL-DA accepted by MICCAI 2025 (Early Accepted) ! 🥰** 
+- **Jun. 2025** — MGCL-DA was accepted by MICCAI 2025 as an **Early Accept** paper.
 
+## Citation
+
+If you find this work useful, please cite:
+
+```bibtex
+@InProceedings{ZhaHao_Multiview_MICCAI2025,
+  author    = {Zhang, Hao and Liu, Xiaoyun and Huang, Shuo and Yuan, Yonggui and Zhang, Daoqiang and Zhang, Li},
+  title     = {Multi-view Graph Contrastive Learning with Dynamic Self-aware and Cross-sample Topology Augmentation for Brain Disorder Diagnosis},
+  booktitle = {Medical Image Computing and Computer Assisted Intervention -- MICCAI 2025},
+  year      = {2025},
+  publisher = {Springer Nature Switzerland},
+  volume    = {LNCS 15971},
+  pages     = {532--542}
+}
+```
 
 ## License
 
-This project is released under the Apache 2.0 license. Please see the [LICENSE](LICENSE) file for more information.
+This project is released under the [MIT License](LICENSE).
