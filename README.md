@@ -52,23 +52,30 @@ The method was evaluated on a major depressive disorder (MDD) dataset and was ac
 
 ## Input Convention
 
-The main model expects an rs-fMRI graph tensor with shape:
+Following the notation in the paper, the BOLD signals of each subject form an undirected spatio-temporal brain network:
 
 ```text
-N × C × T × V × M
+G ∈ R^(T × N)
 ```
 
-where:
+where `T` is the number of rs-fMRI time points and `N` is the number of brain regions defined by the atlas. For a mini-batch of `B` subjects, the inputs are extended to:
 
-- `N`: batch size
-- `C`: input feature channels
-- `T`: temporal dimension
-- `V`: number of brain regions or graph nodes
-- `M`: number of instances per sample
+```text
+G ∈ R^(B × T × N)
+A ∈ R^(B × N × N)
+```
 
-The normalized graph topology is constructed from an `adj_matrix.npy` file located under the model's configured `root_path`.
+where `A` is the functional connectivity matrix computed from the Pearson correlation coefficients between all ROI pairs. In the experiments, the AAL atlas divides the brain into `N = 116` regions.
 
-> This repository currently provides the core model, topology augmentation modules, dataset wrapper, and learning objective. Dataset preprocessing should follow the rs-fMRI and brain-network construction protocol used in the paper.
+The current ST-GCN implementation introduces singleton channel and instance dimensions, so the paper-level input `G ∈ R^(B × T × N)` should be provided to `Model.forward` as:
+
+```text
+B × 1 × T × N × 1
+```
+
+In `net/model.py`, the local variable named `N` denotes the batch size, while `V` denotes the number of brain regions. The shared adjacency matrix is loaded from `adj_matrix.npy` under the configured `root_path` and normalized internally.
+
+> This repository currently provides the core model, topology augmentation modules, dataset wrapper, and learning objective. Dataset preprocessing should follow the rs-fMRI and brain-network construction protocol described in the paper.
 
 ## News
 
